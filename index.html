@@ -1,0 +1,689 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Christmas in Scotland</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..800;1,6..72,300..800&family=Instrument+Sans:wght@400..700&display=swap" rel="stylesheet">
+<style>
+:root{
+--ink:#0b1220;          
+--ink-2:#121c30;
+--ink-3:#1b2842;
+--snow:#f4f1ea;
+--snow-dim:#c9cfdb;
+--muted:#9aa6bd;
+--amber:#f2b45a;        
+--pine:#5cc2a0;         
+--heather:#d58ad8;      
+--ember:#ff7a3d;
+--line:rgba(244,241,234,.16);
+--ease:cubic-bezier(.16,1,.3,1);
+--ease-io:cubic-bezier(.77,0,.18,1);
+--display:"Newsreader", Georgia, serif;
+--sans:"Instrument Sans", system-ui, sans-serif;
+color-scheme:dark;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --ink:#0b1220; --snow:#f4f1ea; } }
+:root[data-theme="dark"]{ --ink:#0b1220; --snow:#f4f1ea; }
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{background:var(--ink);color:var(--snow);font-family:var(--sans);font-size:clamp(16px,1.35vw,24px);line-height:1.45;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
+::selection{background:var(--amber);color:var(--ink)}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+:focus-visible{outline:2px solid var(--amber);outline-offset:4px;border-radius:6px}
+.deck{position:fixed;inset:0;overflow:hidden}
+.slide{position:absolute;inset:0;overflow:hidden;visibility:hidden;clip-path:inset(0 0 0 100%);transition:clip-path 1s var(--ease-io), visibility 0s 1s}
+.slide.back{clip-path:inset(0 100% 0 0)}
+.slide.active{visibility:visible;clip-path:inset(0 0 0 0);z-index:2;transition:clip-path 1s var(--ease-io), visibility 0s}
+.slide.leaving{visibility:visible;z-index:1;clip-path:inset(0 0 0 0);transition:none}
+.slide.leaving > .inner{transform:scale(.94);filter:brightness(.35) blur(3px);transition:transform 1s var(--ease-io), filter 1s var(--ease-io)}
+.inner{position:absolute;inset:0}
+.bg{position:absolute;inset:0;overflow:hidden}
+.bg img{width:100%;height:100%;object-fit:cover;transform:scale(1.14)}
+.slide.active .bg img{animation:kenburns 16s var(--ease) forwards}
+@keyframes kenburns{to{transform:scale(1.02) translate(-1%, -1%)}}
+.shade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(11,18,32,.92) 0%,rgba(11,18,32,.7) 40%,rgba(11,18,32,.15) 75%)}
+.shade.bottom{background:linear-gradient(0deg,rgba(11,18,32,.95) 0%,rgba(11,18,32,.55) 45%,rgba(11,18,32,.1) 80%)}
+.shade.full{background:rgba(11,18,32,.7)}
+.content{position:absolute;inset:0;padding:clamp(56px,7vh,96px) clamp(20px,6vw,120px) clamp(72px,10vh,120px);display:flex;flex-direction:column;justify-content:center;z-index:3}
+.rise{opacity:0;transform:translateY(28px);filter:blur(10px)}
+.slide.active .rise{animation:rise 1.1s var(--ease) both;animation-delay:calc(var(--i,0) * 110ms + 450ms)}
+@keyframes rise{to{opacity:1;transform:none;filter:none}}
+.step{opacity:0;transform:translateY(22px);filter:blur(8px);transition:opacity .7s var(--ease),transform .9s var(--ease),filter .7s var(--ease)}
+.step.shown{opacity:1;transform:none;filter:none}
+h1,h2,h3{font-family:var(--display);font-weight:600;text-wrap:balance;letter-spacing:-.02em;line-height:.98}
+h1{font-size:clamp(3rem,9vw,8.5rem);font-weight:700}
+h2{font-size:clamp(2.4rem,5.6vw,5.6rem)}
+h3{font-size:clamp(1.4rem,2.2vw,2.2rem);line-height:1.1}
+.lede{font-size:clamp(1.1rem,1.8vw,1.9rem);color:var(--snow-dim);max-width:34ch;text-wrap:pretty;margin-top:.6em}
+em.say{font-style:italic;font-family:var(--display);font-weight:400}
+.pron{font-family:var(--sans);font-size:clamp(1rem,1.6vw,1.7rem);letter-spacing:.02em;color:var(--muted);font-weight:500;display:block;margin-top:.5em}
+.speaker{position:fixed;top:clamp(14px,2.4vh,28px);left:clamp(16px,2.2vw,36px);z-index:20;display:flex;align-items:center;gap:.6em;padding:.6em 1.1em .6em .85em;border-radius:999px;background:rgba(11,18,32,.6);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--line);font-weight:600;font-size:clamp(14px,1.05vw,19px);transition:border-color .5s}
+.speaker .dot{width:.72em;height:.72em;border-radius:50%;background:var(--c,var(--amber));transition:background .5s}
+.speaker .who{transition:opacity .3s}
+.progress{position:fixed;left:0;right:0;bottom:0;height:5px;z-index:20;display:flex;gap:3px;padding:0 3px}
+.progress span{flex:1;background:rgba(244,241,234,.12);border-radius:2px;position:relative;overflow:hidden}
+.progress span::after{content:"";position:absolute;inset:0;background:var(--c);transform:scaleX(0);transform-origin:left;transition:transform .8s var(--ease)}
+.progress span.done::after{transform:scaleX(1)}
+.nav{position:fixed;right:clamp(14px,2vw,32px);bottom:clamp(18px,2.6vh,32px);z-index:20;display:flex;gap:8px;align-items:center}
+.nav .count{font-variant-numeric:tabular-nums;color:var(--muted);font-size:14px;margin-right:6px;letter-spacing:.04em}
+.nav button{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:rgba(11,18,32,.6);border:1px solid var(--line);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);transition:background .25s,transform .25s var(--ease)}
+.nav button:hover{background:rgba(244,241,234,.14)}
+.nav button:active{transform:scale(.92)}
+.nav svg{width:20px;height:20px}
+.hint{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:20;font-size:13px;color:var(--muted);letter-spacing:.03em;transition:opacity 1s;pointer-events:none;white-space:nowrap}
+.hint kbd{font-family:var(--sans);border:1px solid var(--line);border-radius:5px;padding:3px 8px;margin:0 2px;color:var(--snow-dim)}
+.notes-panel{position:fixed;left:0;right:0;bottom:0;z-index:30;max-height:42vh;overflow:auto;background:rgba(8,13,24,.94);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:2px solid var(--c,var(--amber));padding:20px clamp(20px,5vw,80px) 34px;transform:translateY(105%);transition:transform .6s var(--ease)}
+.notes-panel.open{transform:none}
+.notes-panel h4{font-size:14px;letter-spacing:.08em;text-transform:uppercase;color:var(--c,var(--amber));margin-bottom:8px}
+.notes-panel p{font-size:clamp(15px,1.15vw,20px);max-width:90ch;margin-bottom:.5em;color:var(--snow-dim)}
+.notes-panel b{color:var(--snow)}
+.slide aside.notes{display:none}
+canvas{display:block}
+#snow{position:fixed;inset:0;width:100%;height:100%;z-index:4;pointer-events:none}
+.tartan{position:absolute;left:0;right:0;bottom:0;height:clamp(14px,2.2vh,22px);z-index:3;
+background:
+repeating-linear-gradient(90deg, transparent 0 22px, rgba(242,180,90,.55) 22px 24px, transparent 24px 40px, rgba(11,18,32,.55) 40px 52px, transparent 52px 64px),
+repeating-linear-gradient(0deg, transparent 0 4px, rgba(213,138,216,.35) 4px 6px, transparent 6px 14px),
+linear-gradient(90deg,#1d3a5f,#24476f);
+opacity:.95}
+.cover .content{justify-content:flex-end;padding-bottom:clamp(90px,14vh,150px)}
+.cover h1 span{display:block}
+.cover h1 .in{font-style:italic;font-weight:300;font-size:.42em;color:var(--snow-dim);margin:.15em 0 .05em .08em;letter-spacing:0}
+.cover .q{font-size:clamp(1rem,1.5vw,1.6rem);color:var(--snow-dim);margin-top:1.1em;max-width:40ch}
+.names{display:flex;flex-wrap:wrap;gap:.4em 1.6em;margin-top:1.4em;font-size:clamp(1rem,1.5vw,1.6rem);font-weight:600}
+.names span{display:flex;align-items:center;gap:.5em}
+.names i{width:.6em;height:.6em;border-radius:50%;background:var(--c)}
+.gaelic{position:absolute;right:clamp(20px,6vw,120px);bottom:clamp(90px,14vh,150px);z-index:3;text-align:right;font-family:var(--display);font-style:italic;font-size:clamp(1.2rem,2.4vw,2.6rem);color:var(--amber)}
+.gaelic small{display:block;font-family:var(--sans);font-style:normal;font-size:.42em;color:var(--snow-dim);letter-spacing:.04em;margin-top:.3em}
+.split{display:grid;grid-template-columns:1.05fr 1fr;height:100%}
+.split .pic{position:relative;overflow:hidden;clip-path:inset(0 100% 0 0);transition:clip-path 1.4s var(--ease) .3s}
+.slide.active .split .pic{clip-path:inset(0)}
+.split .pic img{width:100%;height:100%;object-fit:cover;transform:scale(1.15)}
+.slide.active .split .pic img{animation:kenburns 16s var(--ease) forwards}
+.split .txt{position:relative;padding:clamp(64px,9vh,110px) clamp(20px,5vw,96px);display:flex;flex-direction:column;justify-content:center;background:radial-gradient(120% 80% at 100% 0%, #1a2a48 0%, var(--ink) 60%)}
+.facts{margin-top:1.4em;border-top:1px solid var(--line)}
+.facts div{display:grid;grid-template-columns:9em 1fr;gap:1em;padding:.75em 0;border-bottom:1px solid var(--line);align-items:baseline}
+.facts dt{color:var(--muted);font-size:.85em;letter-spacing:.02em}
+.facts dd{font-family:var(--display);font-size:clamp(1.25rem,2vw,2.1rem);font-weight:500;line-height:1.1}
+.history{background:radial-gradient(70% 60% at 20% 110%, rgba(242,180,90,.22), transparent 70%), radial-gradient(60% 50% at 90% -10%, rgba(92,194,160,.12), transparent 70%), var(--ink)}
+.history h2 .strike{position:relative;display:inline-block}
+.history h2 .strike::after{content:"";position:absolute;left:-2%;right:-2%;top:54%;height:.09em;background:var(--ember);transform:scaleX(0);transform-origin:left;transition:transform .8s var(--ease) 1.3s;border-radius:4px}
+.slide.active.history h2 .strike::after{transform:scaleX(1)}
+.timeline{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(12px,2vw,36px);margin-top:clamp(28px,6vh,72px)}
+.timeline::before{content:"";position:absolute;left:0;right:0;top:calc(clamp(2.6rem,5.4vw,5.6rem) + 18px);height:2px;background:linear-gradient(90deg,var(--line),var(--line))}
+.timeline .year{font-family:var(--display);font-size:clamp(2.6rem,5.4vw,5.6rem);font-weight:700;line-height:1;font-variant-numeric:lining-nums;letter-spacing:-.03em}
+.timeline .knot{display:block;width:14px;height:14px;border-radius:50%;background:var(--ink);border:2px solid var(--amber);margin:12px 0 16px}
+.timeline .step.shown .knot{background:var(--amber)}
+.timeline p{color:var(--snow-dim);max-width:22ch;text-wrap:pretty}
+.timeline .ban .year{color:var(--ember)}
+.timeline .ok .year{color:var(--pine)}
+.gap{margin-top:clamp(22px,4vh,48px);font-family:var(--display);font-style:italic;font-size:clamp(1.2rem,2vw,2.1rem);color:var(--amber)}
+.gap b{font-style:normal;font-weight:700;font-variant-numeric:tabular-nums}
+.markets .content{justify-content:flex-end}
+.chips{display:flex;flex-wrap:wrap;gap:.55em;margin-top:1.3em;max-width:46em}
+.chips span{padding:.42em 1em;border-radius:999px;border:1px solid rgba(92,194,160,.55);background:rgba(11,18,32,.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);font-weight:600;font-size:clamp(.95rem,1.3vw,1.4rem)}
+.inset{position:absolute;right:clamp(20px,5vw,96px);top:clamp(80px,14vh,150px);width:clamp(180px,26vw,460px);aspect-ratio:4/3;border-radius:14px;overflow:hidden;z-index:3;box-shadow:0 30px 60px -20px rgba(0,0,0,.7);transform:rotate(2.5deg) translateY(40px);opacity:0;transition:transform 1.4s var(--ease) .7s, opacity 1s var(--ease) .7s}
+.slide.active .inset{transform:rotate(2.5deg);opacity:1}
+.inset img{width:100%;height:100%;object-fit:cover}
+.lights{position:absolute;left:0;top:0;width:100%;height:40%;z-index:2;pointer-events:none}
+.routine .split{grid-template-columns:1.15fr .85fr}
+.routine .split .txt{order:0;background:radial-gradient(90% 70% at 0% 100%, rgba(213,138,216,.16), transparent 70%), var(--ink)}
+.routine .split .pic{order:1;clip-path:inset(0 0 0 100%)}
+.slide.active.routine .split .pic{clip-path:inset(0)}
+.day{margin-top:1.2em;list-style:none;position:relative}
+.day::before{content:"";position:absolute;left:4.7em;top:1.2em;bottom:1.2em;width:2px;background:var(--line)}
+.day li{display:grid;grid-template-columns:4.1em 1fr;gap:1.2em;padding:.5em 0;align-items:center}
+.day time{font-variant-numeric:tabular-nums;font-weight:700;color:var(--heather);text-align:right;font-size:.95em;white-space:nowrap}
+.day .act{position:relative;padding-left:.8em}
+.day .act::before{content:"";position:absolute;left:calc(-.6em - 4px);top:50%;margin-top:-5px;width:10px;height:10px;border-radius:50%;background:var(--heather)}
+.day b{font-family:var(--display);font-style:italic;font-weight:500;color:var(--heather);margin-right:.35em}
+.day .act span{font-size:clamp(1.2rem,2.2vw,2.4rem)}
+.day li{padding:.65em 0}
+.food{background:var(--ink)}
+.food .content{padding-top:clamp(70px,11vh,120px);justify-content:flex-start}
+.mosaic{flex:1;display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(8px,1vw,16px);margin-top:clamp(18px,3vh,36px);min-height:0}
+.tile{position:relative;border-radius:16px;overflow:hidden;cursor:pointer;opacity:0;transform:translateY(60px) scale(.96);text-align:left}
+.slide.active .tile{animation:tile 1.2s var(--ease) both;animation-delay:calc(var(--i)*120ms + 600ms)}
+@keyframes tile{to{opacity:1;transform:none}}
+.tile img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform 1.2s var(--ease)}
+.tile::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(11,18,32,.92) 0%,rgba(11,18,32,.2) 55%,transparent 80%)}
+.tile:hover img,.tile.on img{transform:scale(1.08)}
+.tile .cap{position:absolute;left:0;right:0;bottom:0;padding:clamp(12px,1.6vw,26px);z-index:2}
+.tile h3{font-size:clamp(1.3rem,2.2vw,2.4rem)}
+.tile p{color:var(--snow-dim);font-size:clamp(.85rem,1.1vw,1.15rem);margin-top:.35em;max-height:0;opacity:0;overflow:hidden;transition:max-height .6s var(--ease),opacity .5s}
+.tile:hover p,.tile.on p,.tile:focus-visible p{max-height:6em;opacity:1}
+.food .lede{max-width:52ch}
+.hog .content{justify-content:flex-end}
+.hog h2{font-size:clamp(3.4rem,10vw,10rem);font-weight:800}
+.triplet{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(14px,2.4vw,44px);margin-top:clamp(20px,3.5vh,44px);max-width:1300px}
+.triplet div{border-top:2px solid var(--amber);padding-top:.8em}
+.triplet h3{font-size:clamp(1.2rem,1.9vw,2rem)}
+.triplet p{color:var(--snow-dim);margin-top:.35em;font-size:.95em}
+.ff{background:radial-gradient(60% 70% at 50% 120%, rgba(242,180,90,.28), transparent 70%), radial-gradient(50% 40% at 50% -10%, rgba(213,138,216,.16), transparent 70%), var(--ink)}
+.ff .content{align-items:center;text-align:center}
+.ff .lede{margin-inline:auto;max-width:30ch}
+.door{position:absolute;left:50%;bottom:0;width:clamp(260px,34vw,560px);height:86%;transform:translateX(-50%);border-radius:200px 200px 0 0;background:linear-gradient(180deg,rgba(242,180,90,.18),rgba(242,180,90,.02));border:1px solid rgba(242,180,90,.25);border-bottom:0;z-index:1;opacity:0;transition:opacity 2s var(--ease) .4s}
+.slide.active .door{opacity:1}
+.gifts{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:clamp(10px,2vw,36px);margin-top:clamp(28px,5vh,64px);width:min(1200px,100%);position:relative;z-index:2}
+.gift{display:flex;flex-direction:column;align-items:center;gap:.7em;padding:clamp(14px,1.8vw,28px) 8px;border-radius:18px;background:#121c30;border:1px solid var(--line);box-shadow:0 20px 40px -24px rgba(0,0,0,.8)}
+.gift svg{width:clamp(44px,5vw,84px);height:auto;stroke:var(--amber);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.gift.step.shown svg{animation:bob 3.5s ease-in-out infinite;animation-delay:calc(var(--i)*.3s)}
+@keyframes bob{50%{transform:translateY(-6px)}}
+.gift h3{font-size:clamp(1.1rem,1.8vw,1.9rem)}
+.gift p{color:var(--muted);font-size:.8em}
+.ff .end{margin-top:clamp(18px,3vh,36px);font-family:var(--display);font-style:italic;font-size:clamp(1.4rem,2.6vw,2.8rem);color:var(--amber);position:relative;z-index:2}
+.fi .halves{position:absolute;inset:0;display:flex}
+.half{position:relative;flex:1;overflow:hidden;transition:flex 1s var(--ease)}
+.half:hover{flex:1.35}
+.half img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scale(1.12)}
+.slide.active .half img{animation:kenburns 16s var(--ease) forwards}
+.half .shade{background:linear-gradient(0deg,rgba(11,18,32,.95) 5%,rgba(11,18,32,.35) 55%,rgba(11,18,32,.15))}
+.half.fire .shade{background:linear-gradient(0deg,rgba(40,10,0,.92) 5%,rgba(20,8,4,.35) 55%,rgba(11,18,32,.2))}
+.half .cap{position:absolute;left:0;right:0;bottom:0;padding:0 clamp(20px,4vw,72px) clamp(80px,12vh,130px);z-index:3}
+.half .big{font-family:var(--display);font-weight:800;font-size:clamp(3.4rem,9vw,9rem);line-height:.9;letter-spacing:-.03em}
+.fire .big{color:var(--ember);text-shadow:0 0 40px rgba(255,122,61,.55);animation:flicker 2.2s infinite}
+.ice .big{color:#bfe6ff;text-shadow:0 0 40px rgba(150,210,255,.35)}
+@keyframes flicker{0%,100%{text-shadow:0 0 30px rgba(255,122,61,.55),0 0 80px rgba(255,90,20,.35);color:var(--ember)}25%{text-shadow:0 0 50px rgba(255,170,70,.9),0 0 120px rgba(255,110,30,.5);color:#ff9a4d}50%{text-shadow:0 0 22px rgba(255,100,40,.4),0 0 60px rgba(255,80,20,.25)}75%{text-shadow:0 0 44px rgba(255,150,61,.8),0 0 100px rgba(255,100,30,.45);color:#ff8840}}
+.half h3{margin-top:.25em}
+.half p{color:var(--snow-dim);margin-top:.4em;max-width:30ch}
+#embers{position:absolute;inset:0;width:100%;height:100%;z-index:2;pointer-events:none;mix-blend-mode:screen}
+.slide.active .fire .big.rise{animation:rise 1.1s var(--ease) both, flicker 1.8s ease-in-out 1.6s infinite}
+.half.fire::after{content:"";position:absolute;left:0;right:0;bottom:0;height:45%;z-index:1;pointer-events:none;background:radial-gradient(70% 90% at 50% 100%,rgba(255,110,30,.45),transparent 70%);animation:heat 2.6s ease-in-out infinite}
+@keyframes heat{0%,100%{opacity:.65}35%{opacity:1}60%{opacity:.5}80%{opacity:.85}}
+.half.ice::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(190,230,255,.18),transparent 45%)}
+.half.ice::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;z-index:4;pointer-events:none;background:linear-gradient(180deg,transparent,rgba(244,241,234,.5),transparent)}
+.mid .content{align-items:center;text-align:center;justify-content:center}
+#fw{position:absolute;inset:0;width:100%;height:100%;z-index:2;pointer-events:none}
+.clock{font-family:var(--display);font-weight:800;font-size:clamp(7rem,26vw,24rem);line-height:.9;font-variant-numeric:tabular-nums;letter-spacing:-.04em;min-height:1em;color:var(--snow)}
+.clock.tick{animation:tick .55s var(--ease)}
+@keyframes tick{from{transform:scale(1.25);opacity:.35}to{transform:none;opacity:1}}
+.go{margin-top:1em;padding:.75em 1.6em;border-radius:999px;background:var(--amber);color:var(--ink);font-weight:700;font-size:clamp(1rem,1.5vw,1.5rem);box-shadow:0 18px 40px -16px rgba(242,180,90,.8);transition:transform .25s var(--ease),opacity .4s}
+.go:hover{transform:translateY(-2px)}
+.go:active{transform:scale(.96)}
+.go[hidden]{display:none}
+.hny{font-family:var(--display);font-style:italic;font-size:clamp(2.4rem,6vw,6rem);color:var(--amber);font-weight:500}
+.song{display:grid;grid-template-columns:auto 1fr;gap:clamp(20px,3vw,56px);align-items:center;text-align:left;max-width:1200px;margin-top:clamp(12px,2vh,28px)}
+.song figure{width:clamp(120px,14vw,240px);aspect-ratio:3/4;border-radius:12px;overflow:hidden;box-shadow:0 24px 50px -20px #000}
+.song figure img{width:100%;height:100%;object-fit:cover}
+.song figcaption{font-size:13px;color:var(--muted);margin-top:6px}
+.lyrics{font-family:var(--display);font-size:clamp(1.25rem,2.3vw,2.5rem);line-height:1.25;font-style:italic}
+.lyrics .k{display:block;max-width:48ch;font-family:var(--sans);font-style:normal;font-size:.5em;color:var(--snow-dim);margin-top:.9em;line-height:1.4}
+.midstate[hidden]{display:none}
+.clock.out{animation:clockout .55s cubic-bezier(.4,0,1,1) forwards}
+@keyframes clockout{to{opacity:0;transform:scale(1.7);filter:blur(12px)}}
+.midstate.enter .hny{animation:hny 1.5s var(--ease) both}
+@keyframes hny{from{opacity:0;transform:scale(.55);filter:blur(16px);letter-spacing:.25em}55%{opacity:1}to{opacity:1;transform:none;filter:none;letter-spacing:normal}}
+.midstate.enter .song figure{animation:up 1.3s var(--ease) .7s both}
+@keyframes up{from{opacity:0;transform:translateY(40px) scale(.96);filter:blur(8px)}to{opacity:1;transform:none;filter:none}}
+.concl{background:radial-gradient(80% 60% at 50% 120%, rgba(242,180,90,.14), transparent 70%), var(--ink)}
+.voices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(16px,2.6vw,48px);margin-top:clamp(22px,4vh,52px)}
+.voice{border-top:3px solid var(--c);padding-top:1em}
+.voice h3{color:var(--c)}
+.voice ul{list-style:none;margin-top:.8em;display:grid;gap:.7em}
+.voice li{color:var(--snow-dim);text-wrap:pretty;font-size:clamp(1rem,1.5vw,1.6rem)}
+.voice li b{display:block;color:var(--snow);font-family:var(--display);font-style:italic;font-weight:500;font-size:1.1em}
+.thanks .content{align-items:center;text-align:center}
+.thanks h2{font-size:clamp(4rem,13vw,13rem);font-weight:800}
+.thanks .lede{margin-inline:auto;max-width:none}
+.thanks .gaelic2{font-family:var(--display);font-style:italic;color:var(--amber);font-size:clamp(1.2rem,2.2vw,2.4rem);margin-top:.8em}
+.credits{position:absolute;left:0;right:0;bottom:clamp(26px,4vh,44px);z-index:3;text-align:center;font-size:12px;color:var(--muted);padding:0 170px}
+@media (max-width:820px){
+.split,.routine .split{grid-template-columns:1fr;grid-template-rows:34% 1fr}
+.routine .split .pic{order:0}
+.split .txt{padding:24px 16px 80px;justify-content:flex-start}
+.content{padding:70px 16px 84px}
+.timeline{grid-template-columns:repeat(2,1fr)}
+.timeline::before{display:none}
+.mosaic{grid-template-columns:repeat(2,1fr)}
+.triplet,.voices{grid-template-columns:1fr}
+.gifts{grid-template-columns:repeat(3,1fr)}
+.song{grid-template-columns:1fr}.song figure{display:none}
+.inset,.gaelic{display:none}
+.facts div{grid-template-columns:7em 1fr}
+.fi .halves{flex-direction:column}
+.half .cap{padding-bottom:24px}
+.hint{display:none}
+.content{overflow:auto}
+}
+@media (prefers-reduced-motion:reduce){
+*,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;transition-duration:.01ms!important}
+}
+</style>
+</head>
+<body>
+<canvas id="snow" aria-hidden="true"></canvas>
+<div class="speaker" aria-live="polite"><span class="dot"></span><span class="who">Adam</span></div>
+<div class="progress" aria-hidden="true"></div>
+<div class="nav">
+<span class="count" aria-live="polite"></span>
+<button id="prev" aria-label="Previous"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+<button id="next" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>
+</div>
+<div class="hint"><kbd>→</kbd> next · <kbd>N</kbd> script · <kbd>F</kbd> full screen</div>
+<div class="notes-panel" aria-live="polite"><h4></h4><div class="body"></div></div>
+<main class="deck">
+<section class="slide cover" data-speaker="adam">
+<div class="inner">
+<div class="bg"><img src="img/castle-snow.jpg" alt="Edinburgh Castle covered in snow"></div>
+<div class="shade bottom"></div>
+<p class="gaelic rise" style="--i:6">Nollaig Chridheil!<small>“Merry Christmas” in Scottish Gaelic</small></p>
+<div class="content">
+<h1><span class="rise" style="--i:0">Christmas</span><span class="in rise" style="--i:1">time in</span><span class="rise" style="--i:2">Scotland</span></h1>
+<p class="q rise" style="--i:3">How is Christmas time celebrated in English-speaking countries?</p>
+<div class="names rise" style="--i:4">
+<span style="--c:var(--amber)"><i></i>Adam</span>
+<span style="--c:var(--pine)"><i></i>Yaneli</span>
+<span style="--c:var(--heather)"><i></i>Miurka</span>
+</div>
+</div>
+<div class="tartan"></div>
+</div>
+<aside class="notes"><p>Good morning, everyone. We are Adam, Yaneli and Miurka, and today we are going to talk about how Christmas time is celebrated in Scotland.</p><p>Our presentation has three parts: <b>first</b>, a little history; <b>then</b>, how Scottish people celebrate Christmas and New Year today; and <b>finally</b>, our conclusion.</p><p>By the way — <i>Nollaig Chridheil</i> means “Merry Christmas” in Scottish Gaelic.</p></aside>
+</section>
+<section class="slide" data-speaker="adam">
+<div class="inner">
+<div class="split">
+<div class="pic"><img src="img/castle-winter.jpg" alt="Edinburgh Castle on a winter day"></div>
+<div class="txt">
+<h2 class="rise" style="--i:0">Meet Scotland</h2>
+<dl class="facts">
+<div class="rise" style="--i:1"><dt>Where</dt><dd>North of Great Britain, UK</dd></div>
+<div class="rise" style="--i:2"><dt>Capital</dt><dd>Edinburgh</dd></div>
+<div class="rise" style="--i:3"><dt>People</dt><dd>≈ 5.5 million</dd></div>
+<div class="rise" style="--i:4"><dt>Languages</dt><dd>English, Scots, Gaelic</dd></div>
+<div class="rise" style="--i:5"><dt>December sunset</dt><dd>≈ 3:40 pm</dd></div>
+</dl>
+</div>
+</div>
+</div>
+<aside class="notes"><p>Scotland is one of the four nations of the United Kingdom, in the north of Great Britain. Its capital is Edinburgh, and almost five and a half million people live there.</p><p>People speak English, but <b>there are</b> two other languages too: Scots and Scottish Gaelic.</p><p>Winters are cold and very dark. In December, the sun sets at about twenty to four in the afternoon! <b>That is why</b> the festive season in Scotland is all about light, fire and being together.</p></aside>
+</section>
+<section class="slide history" data-speaker="adam">
+<div class="inner">
+<div class="content">
+<h2 class="rise" style="--i:0">When Christmas was <span class="strike">banned</span></h2>
+<div class="timeline">
+<div class="step"><div class="year">1560</div><span class="knot"></span><p>The Reformation. The Church sees Christmas as a Catholic festival.</p></div>
+<div class="step ban"><div class="year">1640</div><span class="knot"></span><p>A law bans the “Yule” holiday. People work on 25th December.</p></div>
+<div class="step ok"><div class="year">1958</div><span class="knot"></span><p>Christmas Day is a public holiday again.</p></div>
+<div class="step ok"><div class="year">1974</div><span class="knot"></span><p>Boxing Day (26th December) becomes a holiday too.</p></div>
+</div>
+<p class="gap step"><b data-count="318">0</b> years without a Christmas Day holiday — so New Year became the big party.</p>
+</div>
+</div>
+<aside class="notes"><p>Here is a surprising fact: for a very long time, Scotland didn't really celebrate Christmas.</p><p><b>[1560]</b> After the Protestant Reformation in 1560, the Church of Scotland saw Christmas as a Catholic festival, so it discouraged it.</p><p><b>[1640]</b> Then, in 1640, a law banned the “Yule” holiday. Many people had to work on Christmas Day.</p><p><b>[1958]</b> In fact, Christmas Day only became a public holiday again in 1958 — <b>[1974]</b> and Boxing Day, the 26th, in 1974.</p><p>That's why, for centuries, the biggest winter party in Scotland was not Christmas. It was New Year: Hogmanay. But first, Yaneli is going to tell you about Christmas today.</p></aside>
+</section>
+<section class="slide markets" data-speaker="yaneli">
+<div class="inner">
+<div class="bg"><img src="img/market.jpg" alt="Edinburgh Christmas market at night with stalls and lights"></div>
+<div class="shade bottom"></div>
+<canvas class="lights" aria-hidden="true"></canvas>
+<figure class="inset"><img src="img/market2.jpg" alt="Big wheel and fairground rides at Edinburgh's Christmas market"></figure>
+<div class="content">
+<h2 class="rise" style="--i:0">Christmas markets<br>&amp; lights</h2>
+<div class="chips">
+<span class="rise" style="--i:1">Christmas market</span>
+<span class="rise" style="--i:2">big wheel</span>
+<span class="rise" style="--i:3">ice rink</span>
+<span class="rise" style="--i:4">hot chocolate</span>
+<span class="rise" style="--i:5">presents</span>
+<span class="rise" style="--i:6">lights</span>
+</div>
+</div>
+</div>
+<aside class="notes"><p>Thank you, Adam.</p><p>In December, <b>there are</b> Christmas markets in many Scottish cities. The most famous market is in Edinburgh <i>(édinbra)</i>.</p><p><b>There is</b> a big wheel <i>(uíil)</i>, and <b>there is</b> an ice rink <i>(áis rink)</i>.</p><p>People drink hot chocolate <i>(chóclet)</i> and they buy presents.</p><p>At night, <b>there are</b> a lot of lights in the streets. It is very beautiful <i>(biútiful)</i>!</p></aside>
+</section>
+<section class="slide routine" data-speaker="miurka">
+<div class="inner">
+<div class="split">
+<div class="txt">
+<h2 class="rise" style="--i:0">Christmas Day</h2>
+<ol class="day">
+<li class="step"><time>7 am</time><div class="act"><span><b>First</b>open the presents</span></div></li>
+<li class="step"><time>11 am</time><div class="act"><span><b>Then</b>go for a walk</span></div></li>
+<li class="step"><time>2 pm</time><div class="act"><span><b>After that</b>Christmas dinner</span></div></li>
+<li class="step"><time>3 pm</time><div class="act"><span>the King’s speech on TV</span></div></li>
+<li class="step"><time>7 pm</time><div class="act"><span><b>Finally</b>play games &amp; relax</span></div></li>
+</ol>
+</div>
+<div class="pic"><img src="img/dinner.jpg" alt="A table set for Christmas dinner"></div>
+</div>
+</div>
+<aside class="notes"><p>Now I am going to talk about a typical Christmas Day.</p><p><b>First</b>, children usually wake up very early <i>(érli)</i> and open their presents.</p><p><b>Then</b>, families often go for a walk <i>(uók)</i>.</p><p><b>After that</b>, at two o'clock <i>(oklók)</i>, they have Christmas dinner.</p><p>At three o'clock, many people watch the King's speech <i>(kings spich)</i> on TV.</p><p><b>Finally</b>, in the evening, they usually play games and relax <i>(riláks)</i>.</p></aside>
+</section>
+<section class="slide food" data-speaker="yaneli">
+<div class="inner">
+<div class="content">
+<h2 class="rise" style="--i:0">Christmas food</h2>
+<p class="lede rise" style="--i:1">Roast turkey, potatoes and vegetables… and then the Scottish desserts.</p>
+<div class="mosaic">
+<button class="tile" style="--i:0"><img src="img/shortbread.jpg" alt=""><div class="cap"><h3>Shortbread</h3><p>A sweet biscuit with a lot of butter.</p></div></button>
+<button class="tile" style="--i:1"><img src="img/cranachan.jpg" alt=""><div class="cap"><h3>Cranachan</h3><p>Cream, raspberries, honey and oats.</p></div></button>
+<button class="tile" style="--i:2"><img src="img/clootie.jpg" alt=""><div class="cap"><h3>Clootie dumpling</h3><p>A fruit pudding cooked in a cloth.</p></div></button>
+<button class="tile" style="--i:3"><img src="img/black-bun.jpg" alt=""><div class="cap"><h3>Black bun</h3><p>A rich fruit cake for New Year.</p></div></button>
+</div>
+</div>
+</div>
+<aside class="notes"><p>Food is very important at Christmas. For Christmas dinner, people <b>usually</b> eat roast turkey <i>(térki)</i> with potatoes and vegetables <i>(véchtabols)</i>.</p><p><b>There are</b> also typical Scottish desserts <i>(disérts)</i>.</p><p>Shortbread <i>(shórtbred)</i> is a sweet biscuit <i>(bískit)</i> with a lot of butter <i>(báter)</i>.</p><p>Cranachan <i>(krának-an)</i> has cream, raspberries <i>(rásberis)</i>, honey and oats.</p><p>Clootie dumpling <i>(klúti dámplin)</i> is a fruit pudding. And black bun is a fruit cake for New Year.</p><p>They are delicious <i>(dilíshos)</i>!</p></aside>
+</section>
+<section class="slide hog" data-speaker="adam">
+<div class="inner">
+<div class="bg"><img src="img/torchlight.jpg" alt="Torchlight procession on Calton Hill, Edinburgh"></div>
+<div class="shade bottom"></div>
+<div class="content">
+<h2 class="rise" style="--i:0">Hogmanay<span class="pron">/ˌhɒɡ.məˈneɪ/ · 31st December</span></h2>
+<div class="triplet">
+<div class="rise" style="--i:2"><h3>Redding the house</h3><p>Clean everything before midnight. Start the year fresh.</p></div>
+<div class="rise" style="--i:3"><h3>Torchlight procession</h3><p>Thousands of torches through Edinburgh.</p></div>
+<div class="rise" style="--i:4"><h3>Street party</h3><p>Music, dancing and fireworks over the castle.</p></div>
+</div>
+</div>
+</div>
+<aside class="notes"><p>Now, the most important night of the Scottish winter: Hogmanay. Hogmanay is the Scottish word for the last day of the year, the 31st of December. Nobody knows exactly where the word comes from.</p><p>Traditionally, before midnight, people clean the whole house. This is called “redding the house”, and the idea is to start the new year fresh.</p><p>In Edinburgh, the celebration <b>usually</b> lasts several days: <b>there is</b> a torchlight procession through the city, a huge street party and, at midnight, fireworks over the castle.</p><p><b>However</b>, the most important moment happens after midnight. Miurka?</p></aside>
+</section>
+<section class="slide ff" data-speaker="miurka">
+<div class="inner">
+<div class="door" aria-hidden="true"></div>
+<div class="content">
+<h2 class="rise" style="--i:0">First-footing</h2>
+<p class="lede rise" style="--i:1">The first person in your house after midnight brings presents for good luck.</p>
+<div class="gifts">
+<div class="gift step" style="--i:0">
+<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M10 46l8-14 12 2 6-10 14 6 4 16-10 6H18z"/><path d="M18 32l6 10M36 24l2 14M50 30l-8 10"/></svg>
+<h3>Coal</h3><p>for a warm home</p></div>
+<div class="gift step" style="--i:1">
+<svg viewBox="0 0 64 64" aria-hidden="true"><rect x="10" y="22" width="44" height="20" rx="3"/><path d="M20 22v20M32 22v20M44 22v20"/><circle cx="15" cy="32" r="1"/><circle cx="26" cy="32" r="1"/><circle cx="38" cy="32" r="1"/><circle cx="49" cy="32" r="1"/></svg>
+<h3>Shortbread</h3><p>for food</p></div>
+<div class="gift step" style="--i:2">
+<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M22 26c0-8 4-14 10-14s10 6 10 14"/><path d="M20 26h24l-3 28H23z"/><circle cx="29" cy="18" r="1"/><circle cx="35" cy="18" r="1"/><circle cx="32" cy="14" r="1"/></svg>
+<h3>Salt</h3><p>for flavour</p></div>
+<div class="gift step" style="--i:3">
+<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M8 40c0-10 10-16 24-16s24 6 24 16v6H8z"/><path d="M14 40c0-6 8-10 18-10s18 4 18 10"/><circle cx="24" cy="38" r="1.5"/><circle cx="32" cy="35" r="1.5"/><circle cx="40" cy="38" r="1.5"/></svg>
+<h3>Black bun</h3><p>to never be hungry</p></div>
+<div class="gift step" style="--i:4">
+<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M18 14h28l-3 40H21z"/><path d="M19.5 32h25"/><path d="M24 40c4-2 12-2 16 0"/></svg>
+<h3>Whisky</h3><p>for a happy year</p></div>
+</div>
+<p class="end step">“Happy New Year!”</p>
+</div>
+</div>
+<aside class="notes"><p>This is a very old tradition: first-footing <i>(férst fútin)</i>.</p><p>The “first foot” is the first person in your house after midnight <i>(mídnait)</i>.</p><p>Traditionally, it is a tall <i>(tól)</i> man with dark hair. He brings small presents for good luck <i>(lak)</i>:</p><p>coal <i>(kóul)</i> for the fire, shortbread, salt <i>(sólt)</i>, black bun, and a small glass of whisky <i>(uíski)</i>.</p><p>Then everybody says: “Happy New Year!”</p></aside>
+</section>
+<section class="slide fi" data-speaker="yaneli">
+<div class="inner">
+<div class="halves">
+<div class="half fire">
+<img src="img/biggar.jpg" alt="The Hogmanay bonfire burning in the street in Biggar">
+<div class="shade"></div>
+<canvas id="embers" aria-hidden="true"></canvas>
+<div class="cap"><div class="big rise" style="--i:0">Fire</div><h3 class="rise" style="--i:1">The Biggar Bonfire</h3><p class="rise" style="--i:2">On Hogmanay night, people light a huge bonfire in the street.</p></div>
+</div>
+<div class="half ice">
+<img src="img/loony-dook.jpg" alt="People in costumes running into the sea at the Loony Dook">
+<div class="shade"></div>
+<div class="cap"><div class="big rise" style="--i:3">Ice</div><h3 class="rise" style="--i:4">The Loony Dook</h3><p class="rise" style="--i:5">On 1st January, people jump into the very cold sea in funny costumes.</p></div>
+</div>
+</div>
+</div>
+<aside class="notes"><p>In Scotland, <b>there are</b> some crazy <i>(kréisi)</i> traditions!</p><p>In Biggar <i>(bíga)</i>, a small town, people light a huge bonfire <i>(bónfaier)</i> in the street on Hogmanay night. It is amazing <i>(améisin)</i>!</p><p>And on the first of January, <b>there is</b> the Loony Dook <i>(lúni duk)</i>. People jump into the very cold sea. They <b>usually</b> wear funny costumes <i>(kóstiums)</i>. Brrr!</p></aside>
+</section>
+<section class="slide mid" data-speaker="adam">
+<div class="inner">
+<div class="bg"><img src="img/fireworks.jpg" alt="Fireworks over Edinburgh at New Year"></div>
+<div class="shade full"></div>
+<canvas id="fw" aria-hidden="true"></canvas>
+<div class="content">
+<div class="midstate" data-state="ready">
+<h2 class="rise" style="--i:0">It’s almost midnight…</h2>
+<p class="lede rise" style="--i:1;margin-inline:auto">Count down with us!</p>
+<button class="go rise" style="--i:2" id="go">Start the countdown</button>
+</div>
+<div class="midstate" data-state="count" hidden><div class="clock" id="clock">10</div></div>
+<div class="midstate" data-state="song" hidden>
+<div class="hny">Happy New Year!</div>
+<div class="song">
+<figure><img src="img/burns.jpg" alt="Portrait of the poet Robert Burns"><figcaption>Robert Burns, 1788</figcaption></figure>
+<div class="lyrics step">For auld lang syne, my dear,<br>for auld lang syne,<br>we’ll tak a cup o’ kindness yet<br>for auld lang syne.
+<span class="k">“Auld lang syne” = “old long since”: for old times’ sake. People stand in a circle, cross their arms and hold hands.</span></div>
+</div>
+</div>
+</div>
+</div>
+<aside class="notes"><p>And now… it's almost midnight! Let's count down together! Ten, nine, eight… three, two, one — Happy New Year!</p><p>At midnight, Scottish people stand in a circle, cross their arms, hold hands and sing <i>Auld Lang Syne</i>.</p><p>The poet Robert Burns wrote these words in 1788. <i>Auld lang syne</i> means “old long since”, something like “for old times' sake”. The song is about not forgetting your old friends.</p><p>Today people sing it at New Year all over the world. Let's try the chorus!</p></aside>
+</section>
+<section class="slide concl" data-speaker="all">
+<div class="inner">
+<div class="content">
+<h2 class="rise" style="--i:0">In conclusion…</h2>
+<p class="lede rise" style="--i:1" >In Scotland, Christmas and New Year are two parts of one big celebration.</p>
+<div class="voices">
+<div class="voice step" style="--c:var(--amber)"><h3>Adam</h3><ul>
+<li><b>I have learnt</b>that Christmas was banned for centuries.</li>
+<li><b>I would like to</b>visit Edinburgh for Hogmanay.</li></ul></div>
+<div class="voice step" style="--c:var(--pine)"><h3>Yaneli</h3><ul>
+<li><b>I have learnt</b>a lot about Scottish food.</li>
+<li><b>I enjoyed</b>the Christmas markets.</li>
+<li><b>I would like to</b>try shortbread.</li></ul></div>
+<div class="voice step" style="--c:var(--heather)"><h3>Miurka</h3><ul>
+<li><b>I enjoyed</b>first-footing.</li>
+<li><b>I have learnt</b>the song Auld Lang Syne.</li>
+<li><b>I would like to</b>see the bonfire in Biggar.</li></ul></div>
+</div>
+</div>
+</div>
+<aside class="notes"><p><b>ADAM:</b> In conclusion, we have learnt that in Scotland, Christmas and New Year are two parts of one big celebration. I have learnt that Christmas was banned for centuries — I didn't expect that at all! I would really like to visit Edinburgh for Hogmanay one day, because the street party looks incredible.</p><p><b>YANELI:</b> I have learnt a lot about Scottish food. I enjoyed the Christmas markets because they are very beautiful. I would like to try shortbread.</p><p><b>MIURKA:</b> I enjoyed first-footing because it is very original <i>(oríchinal)</i>. I have learnt the song Auld Lang Syne <i>(old lang sáin)</i>. I would like to see the bonfire in Biggar.</p></aside>
+</section>
+<section class="slide thanks" data-speaker="all">
+<div class="inner">
+<div class="bg"><img src="img/castle-snow.jpg" alt=""></div>
+<div class="shade full"></div>
+<div class="content">
+<h2 class="rise" style="--i:0">Thank you!</h2>
+<p class="lede rise" style="--i:1">Any questions?</p>
+<p class="gaelic2 rise" style="--i:2">Merry Christmas &amp; Happy Hogmanay!</p>
+</div>
+<p class="credits">Photos: Wikimedia Commons (Creative Commons / public domain) — Edinburgh Castle, Edinburgh Christmas Market, Calton Hill procession, Biggar Hogmanay bonfire, Loony Dook, Christmas dinner, shortbread, cranachan, clootie dumpling, black bun, Robert Burns by Alexander Nasmyth.</p>
+<div class="tartan"></div>
+</div>
+<aside class="notes"><p><b>ADAM:</b> Thank you for listening! Do you have any questions?</p><p><b>ALL TOGETHER:</b> Merry Christmas and Happy Hogmanay!</p></aside>
+</section>
+</main>
+<script>
+(() => {
+const slides = [...document.querySelectorAll('.slide')];
+const SPK = { adam:['Adam','var(--amber)'], yaneli:['Yaneli','var(--pine)'], miurka:['Miurka','var(--heather)'], all:['Adam · Yaneli · Miurka','var(--snow)'] };
+const chip = document.querySelector('.speaker'), who = chip.querySelector('.who');
+const count = document.querySelector('.nav .count');
+const notes = document.querySelector('.notes-panel');
+const prog = document.querySelector('.progress');
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let cur = -1, busy = false, first = true;
+slides.forEach(s => { const b = document.createElement('span'); b.style.setProperty('--c', SPK[s.dataset.speaker][1]); prog.appendChild(b); });
+const bars = [...prog.children];
+const steps = s => [...s.querySelectorAll('.step')];
+const shownCount = s => steps(s).filter(e => e.classList.contains('shown')).length;
+function go(i, dir = 1, revealAll = false) {
+if (i < 0 || i >= slides.length || i === cur) return;
+const old = slides[cur], s = slides[i];
+slides.forEach(x => x.classList.remove('leaving'));
+if (old) { old.classList.remove('active'); old.classList.add('leaving'); old.setAttribute('aria-hidden','true'); old.inert = true;
+setTimeout(() => old.classList.remove('leaving'), 1000); }
+s.classList.toggle('back', dir < 0);
+if (first) { s.style.transition = 'none'; first = false; requestAnimationFrame(() => requestAnimationFrame(() => s.style.transition = '')); }
+void s.offsetWidth;
+s.querySelectorAll('.rise,.tile,.bg img,.pic img,.half img').forEach(e => { e.style.animation = 'none'; void e.offsetWidth; e.style.animation = ''; });
+steps(s).forEach(e => e.classList.toggle('shown', revealAll));
+s.classList.add('active'); s.removeAttribute('aria-hidden'); s.inert = false;
+cur = i;
+const [name, c] = SPK[s.dataset.speaker];
+who.textContent = name; chip.style.setProperty('--c', c); notes.style.setProperty('--c', c);
+notes.querySelector('h4').textContent = name;
+notes.querySelector('.body').innerHTML = s.querySelector('aside.notes').innerHTML;
+count.textContent = `${i + 1} / ${slides.length}`;
+bars.forEach((b, k) => b.classList.toggle('done', k <= i));
+history.replaceState(null, '', '#' + (i + 1));
+onEnter(s, revealAll);
+}
+function next() {
+if (busy) return;
+const s = slides[cur], st = steps(s), n = shownCount(s);
+if (s.classList.contains('mid') && midState !== 'song') { startCountdown(); return; }
+if (n < st.length) { reveal(st[n]); return; }
+go(cur + 1, 1);
+}
+function prev() {
+if (busy) return;
+const s = slides[cur], st = steps(s), n = shownCount(s);
+if (n > 0) { st[n - 1].classList.remove('shown'); return; }
+go(cur - 1, -1, true);
+}
+function reveal(el) {
+el.classList.add('shown');
+const cnt = el.querySelector('[data-count]');
+if (cnt) countUp(cnt);
+}
+function countUp(el) {
+const to = +el.dataset.count, t0 = performance.now(), d = reduce ? 1 : 1600;
+const f = t => { const p = Math.min(1, (t - t0) / d); el.textContent = Math.round(to * (1 - Math.pow(1 - p, 4))); if (p < 1) requestAnimationFrame(f); };
+requestAnimationFrame(f);
+}
+let midState = 'ready';
+const mid = document.querySelector('.slide.mid');
+function setMid(state) {
+midState = state;
+mid.querySelectorAll('.midstate').forEach(m => m.hidden = m.dataset.state !== state);
+}
+function onEnter(s, revealAll) {
+if (s === mid) { setMid(revealAll ? 'song' : 'ready'); }
+s.querySelectorAll('.tile.on').forEach(t => t.classList.remove('on'));
+if (revealAll) s.querySelectorAll('[data-count]').forEach(e => e.textContent = e.dataset.count);
+else s.querySelectorAll('[data-count]').forEach(e => e.textContent = '0');
+}
+function startCountdown() {
+if (midState !== 'ready') return;
+setMid('count'); busy = true;
+const clock = document.getElementById('clock');
+let n = 10;
+const tick = () => {
+clock.textContent = n; clock.classList.remove('tick'); void clock.offsetWidth; clock.classList.add('tick');
+if (n === 0) {
+fireworks(6500);
+setTimeout(() => {
+clock.classList.remove('tick'); clock.classList.add('out');
+setTimeout(() => {
+clock.classList.remove('out');
+const song = mid.querySelector('[data-state="song"]');
+song.classList.remove('enter'); void song.offsetWidth; song.classList.add('enter');
+setMid('song'); busy = false;
+}, 480);
+}, 650);
+return;
+}
+n--; setTimeout(tick, 1000);
+};
+tick();
+}
+document.getElementById('go').addEventListener('click', e => { e.stopPropagation(); startCountdown(); });
+document.querySelectorAll('.tile').forEach(t => t.addEventListener('click', () => t.classList.toggle('on')));
+document.getElementById('next').onclick = next;
+document.getElementById('prev').onclick = prev;
+addEventListener('keydown', e => {
+if (e.target.closest && e.target.closest('button') && (e.key === 'Enter' || e.key === ' ')) return;
+const k = e.key;
+if (['ArrowRight','ArrowDown','PageDown',' ','Enter'].includes(k)) { e.preventDefault(); next(); }
+else if (['ArrowLeft','ArrowUp','PageUp','Backspace'].includes(k)) { e.preventDefault(); prev(); }
+else if (k === 'Home') go(0, -1);
+else if (k === 'End') go(slides.length - 1, 1);
+else if (k === 'n' || k === 'N') notes.classList.toggle('open');
+else if (k === 'f' || k === 'F') { document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen?.().catch(()=>{}); }
+});
+let tx = null;
+addEventListener('touchstart', e => tx = e.touches[0].clientX, {passive:true});
+addEventListener('touchend', e => { if (tx === null) return; const dx = e.changedTouches[0].clientX - tx; if (Math.abs(dx) > 60) dx < 0 ? next() : prev(); tx = null; });
+setTimeout(() => document.querySelector('.hint').style.opacity = 0, 7000);
+const sc = document.getElementById('snow'), sx = sc.getContext('2d');
+let flakes = [], W, H, DPR;
+function size() { DPR = Math.min(2, devicePixelRatio || 1); W = innerWidth; H = innerHeight;
+[sc, fwc, emc, lc].forEach(fit);
+flakes = Array.from({length: Math.round(W / 14)}, () => ({ x: Math.random()*W, y: Math.random()*H, r: Math.random()*2.2 + .6, v: Math.random()*.6 + .25, w: Math.random()*Math.PI*2 })); }
+const fwc = document.getElementById('fw'), fx = fwc.getContext('2d');
+const emc = document.getElementById('embers'), ex = emc.getContext('2d');
+const lc = document.querySelector('.lights'), lx = lc.getContext('2d');
+let sparks = [], fwUntil = 0, embers = [];
+function fit(c) { const w = c.clientWidth, h = c.clientHeight; if (!w || !h) return false;
+if (c.width !== Math.round(w * DPR) || c.height !== Math.round(h * DPR)) { c.width = Math.round(w * DPR); c.height = Math.round(h * DPR); c.getContext('2d').setTransform(DPR,0,0,DPR,0,0); }
+return true; }
+function fireworks(ms) { fwUntil = performance.now() + ms; }
+function boom(x, y) {
+const cols = ['#f2b45a','#ffd9a0','#d58ad8','#ffffff','#5cc2a0','#ff7a3d'];
+const c = cols[Math.floor(Math.random()*cols.length)], n = 70 + Math.random()*40;
+for (let i = 0; i < n; i++) { const a = Math.random()*Math.PI*2, sp = Math.random()*5 + 1.5;
+sparks.push({ x, y, vx: Math.cos(a)*sp, vy: Math.sin(a)*sp, life: 1, c }); }
+}
+const bulbs = Array.from({length: 46}, (_, i) => ({ i, ph: Math.random()*6 }));
+function frame(t) {
+sx.clearRect(0, 0, W, H);
+const activeSlide = slides[cur];
+const onFI = activeSlide && activeSlide.classList.contains('fi');
+const snowy = !reduce && activeSlide;
+if (snowy) { sx.save(); if (onFI) { const ice = activeSlide.querySelector('.half.ice').getBoundingClientRect(); sx.beginPath(); sx.rect(ice.left, 0, ice.width, H); sx.clip(); }
+sx.fillStyle = 'rgba(244,241,234,.85)';
+for (const f of flakes) { f.y += f.v; f.w += .01; f.x += Math.sin(f.w) * .35;
+if (f.y > H + 5) { f.y = -5; f.x = Math.random()*W; }
+sx.globalAlpha = .35 + f.r/5; sx.beginPath(); sx.arc(f.x, f.y, f.r, 0, 7); sx.fill(); }
+sx.globalAlpha = 1; sx.restore(); }
+if (activeSlide === mid && fit(fwc)) {
+fx.globalCompositeOperation = 'destination-out'; fx.fillStyle = 'rgba(0,0,0,.22)'; fx.fillRect(0, 0, W, H);
+fx.globalCompositeOperation = 'lighter';
+if (t < fwUntil && Math.random() < .08) boom(W*(.15 + Math.random()*.7), H*(.12 + Math.random()*.4));
+for (const p of sparks) { p.x += p.vx; p.y += p.vy; p.vx *= .985; p.vy = p.vy*.985 + .05; p.life -= .012;
+fx.globalAlpha = Math.max(0, p.life); fx.fillStyle = p.c; fx.beginPath(); fx.arc(p.x, p.y, 2, 0, 7); fx.fill(); }
+sparks = sparks.filter(p => p.life > 0); fx.globalAlpha = 1;
+} else if (sparks.length) { sparks = []; fx.clearRect(0,0,W,H); }
+if (onFI && !reduce && fit(emc)) {
+const w = emc.clientWidth, h = emc.clientHeight;
+ex.clearRect(0, 0, w, h);
+ex.globalCompositeOperation = 'lighter';
+for (let k = 0; k < 3 && embers.length < 160; k++)
+embers.push({ x: w * (.1 + Math.random() * .8), y: h * (.55 + Math.random() * .5), vx: (Math.random() - .5) * .6, v: Math.random() * 1.6 + .8, r: Math.random() * 2.4 + .8, w: Math.random() * 6, life: 1, decay: .004 + Math.random() * .006 });
+for (const e of embers) { e.y -= e.v; e.w += .06; e.x += e.vx + Math.sin(e.w) * .7; e.life -= e.decay;
+const a = Math.max(0, e.life), flick = .75 + Math.random() * .25;
+const col = a > .66 ? '255,214,140' : a > .33 ? '255,150,60' : '230,80,30';
+const g = ex.createRadialGradient(e.x, e.y, 0, e.x, e.y, e.r * 5);
+g.addColorStop(0, `rgba(${col},${a * flick})`); g.addColorStop(.25, `rgba(${col},${a * .45})`); g.addColorStop(1, `rgba(${col},0)`);
+ex.fillStyle = g; ex.beginPath(); ex.arc(e.x, e.y, e.r * 5, 0, 7); ex.fill(); }
+embers = embers.filter(e => e.life > 0 && e.y > -20);
+ex.globalCompositeOperation = 'source-over';
+}
+if (activeSlide && activeSlide.classList.contains('markets') && fit(lc)) {
+const w = lc.clientWidth, h = lc.clientHeight;
+lx.clearRect(0, 0, w, h);
+lx.strokeStyle = 'rgba(244,241,234,.25)'; lx.lineWidth = 1; lx.beginPath();
+const yAt = x => h*.18 + Math.sin(x / w * Math.PI * 3) * h*.08 + (x/w)*h*.06;
+for (let x = 0; x <= w; x += 8) x ? lx.lineTo(x, yAt(x)) : lx.moveTo(x, yAt(x)); lx.stroke();
+for (const b of bulbs) { const x = (b.i + .5) / bulbs.length * w, y = yAt(x) + 7;
+const a = reduce ? .9 : .45 + .55 * (0.5 + 0.5*Math.sin(t/420 + b.ph));
+const g = lx.createRadialGradient(x, y, 0, x, y, 16); const col = b.i % 3 === 0 ? '242,180,90' : b.i % 3 === 1 ? '92,194,160' : '255,236,200';
+g.addColorStop(0, `rgba(${col},${a})`); g.addColorStop(1, `rgba(${col},0)`);
+lx.fillStyle = g; lx.beginPath(); lx.arc(x, y, 16, 0, 7); lx.fill();
+lx.fillStyle = `rgba(${col},${Math.min(1, a + .2)})`; lx.beginPath(); lx.arc(x, y, 2.6, 0, 7); lx.fill(); }
+}
+requestAnimationFrame(frame);
+}
+addEventListener('resize', size);
+addEventListener('hashchange', () => { const n = (parseInt(location.hash.slice(1)) || 1) - 1; if (n !== cur) go(n, n > cur ? 1 : -1); });
+const start = Math.max(0, Math.min(slides.length - 1, (parseInt(location.hash.slice(1)) || 1) - 1));
+slides.forEach(s => { s.setAttribute('aria-hidden','true'); s.inert = true; });
+go(start, 1);
+size();
+addEventListener('transitionend', size, { once: true });
+setTimeout(size, 1100);
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
